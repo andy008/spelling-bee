@@ -62,39 +62,30 @@ function renderThree(){
 
     // Load
     const loader = new THREE.TextureLoader();
-
-    // Cube 2
     let earthTexture = new THREE.TextureLoader().load("/assets/images/earth.jpg");
-    let geometry1 = new THREE.BoxGeometry( 2, 2, 2 );
-    //let material1 = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    let material1 = new THREE.MeshBasicMaterial( { map: earthTexture } );
-    let cube2 = new THREE.Mesh( geometry1, material1 );
-    scene.add( cube2 );    
-    cube2.position.z = 2;
-    cube2.position.setX(3); 
+    let normalTexture = new THREE.TextureLoader().load("/assets/images/normal.jpg");
 
     // Background
     scene.background = new THREE.TextureLoader().load("/assets/images/space.jpg");
     
     // Earth
-    let earth = new THREE.Mesh(
-      new THREE.SphereGeometry(3, 32, 32),
-      new THREE.MeshStandardMaterial({ map: earthTexture}),
-    );
-    scene.add(earth);
-    earth.position.z = 2;
-    earth.position.setX(-3);  
+    let geometryEarthSphere = new THREE.SphereGeometry( 3, 32, 32 );
+    let materialEarthSphere = new THREE.MeshBasicMaterial( { map: earthTexture, normalMap: normalTexture, } );
+    let planetEarth = new THREE.Mesh( geometryEarthSphere, materialEarthSphere );
+    scene.add(planetEarth);
+    planetEarth.position.z = 2;
+    planetEarth.position.setX(-3);  
 
     // STARS
     function addStars(){
 
       // The loop will move from z position of -1000 to z position 1000, adding a random particle at each position. 
-      for ( var z= -500; z < 500; z+=20 ) {
+      for ( let z= -500; z < 500; z+=20 ) {
     
         // Make a sphere (exactly the same as before). 
-        var geometry   = new THREE.SphereGeometry(2, 32, 32)
-        var material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
-        var sphere = new THREE.Mesh(geometry, material)
+        let geometry   = new THREE.SphereGeometry(2, 32, 32)
+        let material = new THREE.MeshBasicMaterial( { map: normalTexture, normalMap: normalTexture, } );
+        let sphere = new THREE.Mesh(geometry, material)
     
         // This time we give the sphere random x and y positions between -500 and 500
         sphere.position.x = Math.random() * 500 - 250;
@@ -134,9 +125,7 @@ function renderThree(){
 
     let animate = function () {
       requestAnimationFrame( animate );
-      cube2.rotation.x += 0.01;
-      cube2.rotation.y += 0.01;
-      earth.rotation.x += 0.001;
+      planetEarth.rotation.y += 0.001;
       renderer.render( scene, camera );
     };
     animate();
