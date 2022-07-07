@@ -1,0 +1,7 @@
+{
+  "name": "spelling-bee",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
