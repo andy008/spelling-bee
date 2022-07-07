@@ -70,7 +70,9 @@ function renderThree(){
     let material1 = new THREE.MeshBasicMaterial( { map: earthTexture } );
     let cube2 = new THREE.Mesh( geometry1, material1 );
     scene.add( cube2 );    
-    
+    cube2.position.z = 2;
+    cube2.position.setX(3); 
+
     // Background
     scene.background = new THREE.TextureLoader().load("/assets/images/space.jpg");
     
@@ -80,8 +82,8 @@ function renderThree(){
       new THREE.MeshStandardMaterial({ map: earthTexture}),
     );
     scene.add(earth);
-    earth.position.z = 1;
-    earth.position.setX(-5);  
+    earth.position.z = 2;
+    earth.position.setX(-3);  
 
     // STARS
     function addStars(){
@@ -90,13 +92,13 @@ function renderThree(){
       for ( var z= -500; z < 500; z+=20 ) {
     
         // Make a sphere (exactly the same as before). 
-        var geometry   = new THREE.SphereGeometry(0.5, 32, 32)
+        var geometry   = new THREE.SphereGeometry(2, 32, 32)
         var material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
         var sphere = new THREE.Mesh(geometry, material)
     
         // This time we give the sphere random x and y positions between -500 and 500
-        sphere.position.x = Math.random() * 1000 - 500;
-        sphere.position.y = Math.random() * 1000 - 500;
+        sphere.position.x = Math.random() * 500 - 250;
+        sphere.position.y = Math.random() * 500 - 250;
     
         // Then set the z position to where it is in the loop (distance of camera)
         sphere.position.z = z;
@@ -111,7 +113,7 @@ function renderThree(){
     }
     
     
-    //addStars();    
+    addStars();    
 
 
     //add some lighting
@@ -134,8 +136,7 @@ function renderThree(){
       requestAnimationFrame( animate );
       cube2.rotation.x += 0.01;
       cube2.rotation.y += 0.01;
-      earth.rotation.y += 0.01;
-      earth.rotation.x += 0.01;
+      earth.rotation.x += 0.001;
       renderer.render( scene, camera );
     };
     animate();
