@@ -7,7 +7,7 @@ const Tab1: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Home</IonTitle>
+          <IonTitle>Home Tools</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -16,7 +16,6 @@ const Tab1: React.FC = () => {
             <IonTitle>Home</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="home" />
       </IonContent>
     </IonPage>
   );

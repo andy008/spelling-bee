@@ -234,3 +234,5 @@ http://ionicframework.com/docs/theming/ */
     --ion-card-background: #1e1e1e;
   }
 }
+
+ion-title { --background: #396dcf; --color: rgb(204, 204, 204); }

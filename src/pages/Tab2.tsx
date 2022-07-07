@@ -13,10 +13,9 @@ const Tab2: React.FC = () => {
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Lists</IonTitle>
+            <IonTitle>Lists</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <ExploreContainer name="lists" />
       </IonContent>
     </IonPage>
   );
