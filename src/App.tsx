@@ -1,4 +1,5 @@
 import { Redirect, Route } from 'react-router-dom';
+import { Canvas } from '@react-three/fiber'
 import {
   IonApp,
   IonIcon,
@@ -10,7 +11,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
+import { albums, home, person } from 'ionicons/icons';
 import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
@@ -37,10 +38,17 @@ import './theme/variables.css';
 setupIonicReact();
 
 const App: React.FC = () => (
-  <IonApp>
+  <IonApp>     
     <IonReactRouter>
+      <Canvas>
+        <pointLight position={[10, 10, 10]} />
+        <mesh>
+          <boxGeometry />
+          <meshStandardMaterial color="hotpink" />
+        </mesh>
+      </Canvas>      
       <IonTabs>
-        <IonRouterOutlet>
+        <IonRouterOutlet>          
           <Route exact path="/tab1">
             <Tab1 />
           </Route>
@@ -56,16 +64,16 @@ const App: React.FC = () => (
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="tab1" href="/tab1">
-            <IonIcon icon={triangle} />
-            <IonLabel>Tab 1</IonLabel>
+            <IonIcon icon={home} />
+            <IonLabel>Home</IonLabel>
           </IonTabButton>
           <IonTabButton tab="tab2" href="/tab2">
-            <IonIcon icon={ellipse} />
-            <IonLabel>Tab 2</IonLabel>
+            <IonIcon icon={albums} />
+            <IonLabel>Lists</IonLabel>
           </IonTabButton>
           <IonTabButton tab="tab3" href="/tab3">
-            <IonIcon icon={square} />
-            <IonLabel>Tab 3</IonLabel>
+            <IonIcon icon={person} />
+            <IonLabel>Profile</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>

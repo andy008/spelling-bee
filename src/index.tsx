@@ -1,11 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+
+// @ts-ignore
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-  <React.StrictMode>
+const container = document.getElementById('root');
+const root = createRoot(container);
+
+// React 18 important notes: https://daily-dev-tips.com/posts/upgrading-to-react-18/
+
+root.render(
+  <React.StrictMode>  
     <App />
   </React.StrictMode>,
   document.getElementById('root')
