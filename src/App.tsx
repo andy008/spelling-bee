@@ -227,7 +227,7 @@ const App: React.FC = () => (
         <IonTabBar slot="bottom">
           <IonTabButton onClick={tab1} tab="tab1" href="/tab1">
             <IonIcon icon={home} />
-            <IonLabel>Home</IonLabel>
+            <IonLabel>Dashboard</IonLabel>
           </IonTabButton>
           <IonTabButton onClick={tab2} tab="tab2" href="/tab2">
             <IonIcon icon={albums} />

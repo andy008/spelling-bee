@@ -3,6 +3,7 @@ import { isPlatform } from '@ionic/react';
 import { analytics } from "ionicons/icons";
 
 const LIST_STORAGE = 'lists';
+
 export function useLists():any {
 
 
@@ -23,16 +24,16 @@ export function useLists():any {
                 words: [
                 {
                     id: 1,
-                    word: 'hello',
-                    exampleSentence: 'Hello, world!',
+                    word: 'beautiful',
+                    exampleSentence: 'It was a beautiful day! Beautiful.',
                     tries: 0,
                     correct: 0,
                     wrong: 0,
                 },
                 {
                     id: 2,
-                    word: 'world',
-                    exampleSentence: 'Hello, world!',
+                    word: 'sunshine',
+                    exampleSentence: 'It is nice to be outside in the sunshine. Sunshine.',
                     tries: 0,
                     correct: 0,
                     wrong: 0,
@@ -138,7 +139,7 @@ export function useLists():any {
 
 type Nullable<T> = T | null;
 
-interface ListItem {
+export interface ListItem {
   id: number;
   word: string;
   exampleSentence: string;
@@ -147,7 +148,7 @@ interface ListItem {
   wrong: number;
 }
 
-interface List {
+export interface List {
   id: number;
   createdDate:  Date;
   year: number;
@@ -159,7 +160,7 @@ interface List {
   completedDate: Nullable<Date>;
 }
 
-interface Lists {
+export interface Lists {
   id: number;
   name: string;
   owner: number;  
