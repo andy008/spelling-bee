@@ -35,187 +35,184 @@ function addList() {
   console.log("addlist");
 }
 
+let voices
 EasySpeech.detect();
 EasySpeech.init({ maxTimeout: 5000, interval: 250 })
-  .then(() => console.debug("load complete"))
+  .then(() => {
+    voices = EasySpeech.voices();
+    const languages = new Set();  
+    console.log(JSON.stringify(voices));
+    console.debug("load complete")
+  })
   .catch((e) => console.error(e));
 
 const Tab1: React.FC = () => {
+
+  console.log('Init Tab1');
+  
   const { getList, wordLists } = useLists();
   const modal = useRef<HTMLIonModalElement>(null);
   const input = useRef<HTMLIonInputElement>(null);
-  let wordList, currentWord, totalWords, currentWordIndex, retryCount;
-  retryCount = 0;
 
-  const [message, setMessage] = useState(
-    "This modal example uses triggers to automatically open a modal when the button is clicked."
-  );
+  // state
+  const [showModal, setShowModal] = useState(false);
+  const [currentWord, setCurrentWord] = useState(undefined);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [wordList, setWordList] = useState(undefined);
+  const [retryCount, setRetryCount] = useState(0);
+  const [utterance, setUtterance] = useState('');
+
+
+  useEffect(() => {
+    console.log('list selected');
+    console.log('List:' + JSON.stringify(wordList));  
+    if(typeof wordList !== 'undefined') {
+      setCurrentWordIndex(1);   
+    }
+  },[wordList]);  
+
+  useEffect(() => {
+    if(typeof wordList !== 'undefined') {
+      if (currentWordIndex < wordList.words.length) {
+        console.log('next word');
+        setCurrentWord(wordList.words[currentWordIndex-1]);
+        const utterance = "Okay, spell " + wordList.words[currentWordIndex-1].word + ". " + wordList.words[currentWordIndex-1].exampleSentence;
+        setUtterance(utterance);
+        setShowModal(prevShowModal => !(prevShowModal));
+      } else {
+        setUtterance("You have finished the drill! Well done.");
+        return () => {
+          // clean up
+        }
+      }         
+    }
+  },[currentWordIndex])
+
+  useEffect(() => {
+    EasySpeech.speak({
+      text: utterance,
+      //voice: myLangVoice, // optional, will use a default or fallback
+      pitch: 1,
+      rate: 0.9,
+      volume: 1,
+      // there are more events, see the API for supported events
+      //boundary: (e) => console.debug("boundary reached"),
+    });
+  },[utterance])
+
+  useEffect(() => {
+    //modal
+    if(showModal){
+      modal.current.present()
+    } else { 
+      modal.current.dismiss();
+    }  
+  },[showModal])
+
 
   function confirm() {
     // toggle modal
-    toggleModal()    
+    setShowModal(prevShowModal => !(prevShowModal));   
     //modal.current?.dismiss(input.current?.value, "confirm");
     //random number between 1 and 8
     let random = Math.floor(Math.random() * 8) + 1;
     switch(random){
       case 1:
-        speak("How did you go?");
+        setUtterance("How did you go?");
         break;
       case 2:
-        speak("Did you get it right?");
+        setUtterance("Did you get it right?");
         break;
       case 3:
-        speak("Okay, let's take a look?");
+        setUtterance("Okay, let's take a look?");
         break;
       case 4:
-        speak("I'm checking that one.");
+        setUtterance("I'm checking that one.");
         break;  
       case 5:
-        speak("Is it right?");
+        setUtterance("Is it right?");
         break;
       case 6:
-        speak("Okay, let'see if it's right.");
+        setUtterance("Okay, let'see if it's right.");
         break;
       case 7:
-        speak("How did you go?");
+        setUtterance("How did you go?");
         break;
       case 8:
-        speak("Alrighty, let's see if it's right.");
+        setUtterance("Alrighty, let's see if it's right.");
         break;                   
     }  
-    console.log(currentWord);
-    console.log(input.current?.value);
-    if (currentWord.word == input.current?.value) {
+    console.log('Confirm:' + currentWord.word);
+
+    if (currentWord.word === input.current?.value) {
       //random number between 1 and 8
       let random = Math.floor(Math.random() * 8) + 1;
       switch(random){
         case 1:
-          speak("Yes, well done!");
+          setUtterance("Yes, well done!");
           break;
         case 2:
-          speak("Alrighty then! You got it!");
+          setUtterance("Alrighty then! You got it!");
           break;
         case 3:
-          speak("Yep, got it!");
+          setUtterance("Yep, got it!");
           break;
         case 4:
-          speak("Fantastic!");
+          setUtterance("Fantastic!");
           break;  
         case 5:
-          speak("Nice going!");
+          setUtterance("Nice going!");
           break;
         case 6:
-          speak("Oh, yeh!");
+          setUtterance("Oh, yeh!");
           break;
         case 7:
-          speak("Yes!");
+          setUtterance("Yes!");
           break;
         case 8:
-          speak("Okay!");
+          setUtterance("Okay!");
           break;                   
       }        
-      controlDrill();
-      retryCount = 0;
+      input.current.value = '';
+      setRetryCount(0);
+      setCurrentWordIndex(prevWordIndex => prevWordIndex + 1);
     } else {
-      speak("No, incorrect!");
-      retryCount++;
+      setUtterance("No, incorrect!");
+      
       console.log('retryCount:' + retryCount);
       if(retryCount<3){
         switch(retryCount){
           case 1:
-            speak("Try again!");
+            setUtterance("Try again!");
             break;
           case 2:
-            speak("One more time!");
+            setUtterance("One more time!");
             break;
         }     
-        currentWordIndex--;
-        controlDrill();
+        setShowModal(prevShowModal => !(prevShowModal));
+        repeat();  
       }else{    
-        speak("Maybe next time!");
-        retryCount = 0;
-        controlDrill();
+        setUtterance("Maybe next time!");
+        console.log(input.current?.value);
+        setRetryCount(0);
+        setRetryCount(prevRetryCount => prevRetryCount++);
+        setCurrentWordIndex(prevWordIndex => prevWordIndex + 1);
       }
     }
   }
 
-  function onWillDismiss(ev: CustomEvent<OverlayEventDetail>) {
-    if (ev.detail.role === "confirm") {
-      setMessage(`Hello, ${ev.detail.data}!`);
-    }
-  }
-
-  function drill(list) {
-    return (event: React.MouseEvent) => {
-      console.log("drill");
-      event.preventDefault();
-      currentWordIndex = 0;
-      totalWords = list.words.length;
-      wordList = list.words
-      controlDrill();
-    };
-  }
-
-  function controlDrill(){
-    if (currentWordIndex < totalWords) {
-      currentWordIndex++;
-      currentWord = wordList[currentWordIndex-1];
-      doWord(currentWord);
-    } else {
-      speak("You have finished the drill! Well done.");
-    }
-  }
-
-  function toggleModal(){
-    console.log('Modal:' + modal.current.isOpen)
-    if(modal.current.isOpen){
-      modal.current.dismiss()
-    } else { 
-      modal.current.present();
-    }
-  }
-
-  function doWord(item){
-    // say word
-    const utterance = 
-    "Okay, spell " +
-    item.word +
-    ". " +
-    item.exampleSentence;
-    // trigger a drill on this item here
-    currentWord = item;
-    // toggle modal
-    toggleModal()
-    //  reset form
-    //input?.current.value = "";
-    //input.current?.focus();    
-    speak(utterance);
-  }
-
-  function speak(utterance: string) {
-    EasySpeech.speak({
-      text: utterance,
-      //voice: myLangVoice, // optional, will use a default or fallback
-      pitch: 1,
-      rate: 1,
-      volume: 1,
-      // there are more events, see the API for supported events
-      boundary: (e) => console.debug("boundary reached"),
-    });
-  }
 
   function repeat() {
-    speak(currentWord.word);
-    speak(currentWord.exampleSentence);
+    console.log('Repeat')
+    setUtterance("Okay, " + currentWord.word + '. ' + currentWord.exampleSentence);
+  }  
+
+  function onWillDismiss(ev: CustomEvent<OverlayEventDetail>) {
+    if (ev.detail.role === "confirm") {
+      //setMessage(`Hello, ${ev.detail.data}!`);
+    }
   }
 
-  //const wordListsObj = getList();
-  //console.log('Word list A:' + JSON.stringify(wordListsObj));
-  //const [wordListsA, setWordList] = useState<any>();
-  //setWordList(wordListsObj);
-  //console.log('Word list from function const:' + JSON.stringify(wordLists));
-
-  //const [wordList, setPhotoToDelete] = useState<UserPhoto>();
 
   return (
     <IonPage>
@@ -234,7 +231,7 @@ const Tab1: React.FC = () => {
           {wordLists.lists.map((list: any) => (
             <IonItemSliding key={list.id}>
               <IonItem>
-                <IonLabel onClick={drill(list)} color="secondary">
+                <IonLabel onClick={() => setWordList(list)} color="secondary">
                   {list.name}
                 </IonLabel>
               </IonItem>
