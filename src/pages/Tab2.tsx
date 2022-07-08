@@ -24,7 +24,7 @@ import {
   IonModal,
 } from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/core/components";
-import { camera, addCircle, close } from "ionicons/icons";
+import { camera, addCircle, close, downloadSharp, contractOutline } from "ionicons/icons";
 //import ExploreContainer from '../components/ExploreContainer';
 import EasySpeech from "easy-speech";
 import { useLists, List } from "../hooks/useWordLists";
@@ -44,21 +44,98 @@ const Tab1: React.FC = () => {
   const { getList, wordLists } = useLists();
   const modal = useRef<HTMLIonModalElement>(null);
   const input = useRef<HTMLIonInputElement>(null);
-  let currentWord;
+  let wordList, currentWord, totalWords, currentWordIndex, retryCount;
+  retryCount = 0;
 
   const [message, setMessage] = useState(
     "This modal example uses triggers to automatically open a modal when the button is clicked."
   );
 
   function confirm() {
-    modal.current?.dismiss(input.current?.value, "confirm");
-    speak("Okay, did you get it right?");
+    // toggle modal
+    toggleModal()    
+    //modal.current?.dismiss(input.current?.value, "confirm");
+    //random number between 1 and 8
+    let random = Math.floor(Math.random() * 8) + 1;
+    switch(random){
+      case 1:
+        speak("How did you go?");
+        break;
+      case 2:
+        speak("Did you get it right?");
+        break;
+      case 3:
+        speak("Okay, let's take a look?");
+        break;
+      case 4:
+        speak("I'm checking that one.");
+        break;  
+      case 5:
+        speak("Is it right?");
+        break;
+      case 6:
+        speak("Okay, let'see if it's right.");
+        break;
+      case 7:
+        speak("How did you go?");
+        break;
+      case 8:
+        speak("Alrighty, let's see if it's right.");
+        break;                   
+    }  
     console.log(currentWord);
     console.log(input.current?.value);
     if (currentWord.word == input.current?.value) {
-      speak("Yes, correct!");
+      //random number between 1 and 8
+      let random = Math.floor(Math.random() * 8) + 1;
+      switch(random){
+        case 1:
+          speak("Yes, well done!");
+          break;
+        case 2:
+          speak("Alrighty then! You got it!");
+          break;
+        case 3:
+          speak("Yep, got it!");
+          break;
+        case 4:
+          speak("Fantastic!");
+          break;  
+        case 5:
+          speak("Nice going!");
+          break;
+        case 6:
+          speak("Oh, yeh!");
+          break;
+        case 7:
+          speak("Yes!");
+          break;
+        case 8:
+          speak("Okay!");
+          break;                   
+      }        
+      controlDrill();
+      retryCount = 0;
     } else {
-      speak("No, incorrect! Try again.");
+      speak("No, incorrect!");
+      retryCount++;
+      console.log('retryCount:' + retryCount);
+      if(retryCount<3){
+        switch(retryCount){
+          case 1:
+            speak("Try again!");
+            break;
+          case 2:
+            speak("One more time!");
+            break;
+        }     
+        currentWordIndex--;
+        controlDrill();
+      }else{    
+        speak("Maybe next time!");
+        retryCount = 0;
+        controlDrill();
+      }
     }
   }
 
@@ -72,17 +149,47 @@ const Tab1: React.FC = () => {
     return (event: React.MouseEvent) => {
       console.log("drill");
       event.preventDefault();
-      currentWord = list.words[0];
-      const utterance =
-        "Okay, spell " +
-        list.words[0].word +
-        ". " +
-        list.words[0].exampleSentence;
-      // trigger a drill on this item here
-      modal.current.present();
-      speak(utterance);
-      console.log(JSON.stringify(list));
+      currentWordIndex = 0;
+      totalWords = list.words.length;
+      wordList = list.words
+      controlDrill();
     };
+  }
+
+  function controlDrill(){
+    if (currentWordIndex < totalWords) {
+      currentWordIndex++;
+      currentWord = wordList[currentWordIndex-1];
+      doWord(currentWord);
+    } else {
+      speak("You have finished the drill! Well done.");
+    }
+  }
+
+  function toggleModal(){
+    console.log('Modal:' + modal.current.isOpen)
+    if(modal.current.isOpen){
+      modal.current.dismiss()
+    } else { 
+      modal.current.present();
+    }
+  }
+
+  function doWord(item){
+    // say word
+    const utterance = 
+    "Okay, spell " +
+    item.word +
+    ". " +
+    item.exampleSentence;
+    // trigger a drill on this item here
+    currentWord = item;
+    // toggle modal
+    toggleModal()
+    //  reset form
+    //input?.current.value = "";
+    //input.current?.focus();    
+    speak(utterance);
   }
 
   function speak(utterance: string) {
