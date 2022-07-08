@@ -1,1 +1,9 @@
 ion-content { --background: transparent;}
+ion-item { 
+    --padding-top: 15px;
+    --background: rgba(44, 47, 202, 0.281) !important;
+}
+
+.list-md {
+    background: #9ba0dd63 !important;
+}

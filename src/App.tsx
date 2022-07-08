@@ -1,3 +1,4 @@
+import { useState, useMemo, useTransition } from "react";
 import { Redirect, Route } from 'react-router-dom';
 
 import {
@@ -11,7 +12,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { albums, home, person } from 'ionicons/icons';
+import { albums, home, list, person } from 'ionicons/icons';
 import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
@@ -43,7 +44,7 @@ import './theme/variables.css';
 
 setupIonicReact();
 
-// Future https://github.com/asjadanis/react-three-boilerplate/blob/master/src/Scene.js 
+// Class approach? https://github.com/asjadanis/react-three-boilerplate/blob/master/src/Scene.js 
 
 // objects
 let planetEarth: any;
@@ -61,9 +62,6 @@ const interactionManager = new InteractionManager(
   renderer.domElement,
   false
 );
-
-
-
 
 animate((time: number) => {
   renderer.render(scene, camera);
@@ -143,18 +141,6 @@ function moveCamera(x:number,y:number,z:number){
 
 function initSceneObjects() {
 
-    //let scene = new THREE.Scene();
-    //let camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000 );
-    //let renderer = new THREE.WebGLRenderer({ antialias: true });
-    //renderer.autoClear = false;
-    //renderer.setPixelRatio(window.devicePixelRatio);
-    //renderer.setSize( window.innerWidth, window.innerHeight );
-    //renderer.gammaOutput = true;
-    //renderer.gammaFactor = 2.2;    
-    //renderer.shadowMap.type = THREE.PCFSoftShadowMap;    
-    //renderer.setClearColor(0x000000, 0.0);
-    //document.body.appendChild( renderer.domElement );
-
     // Load
     const loader = new THREE.TextureLoader();
     let earthTexture = new THREE.TextureLoader().load("/assets/images/earth.jpg");
@@ -197,25 +183,6 @@ function initSceneObjects() {
     
     addStars();    
 
-
-    //scene.add(spotLight);    
-
-    // Camera
-    //camera.position.setZ(30);
-    //camera.position.setX(-2);
-    //camera.lookAt(scene.position);
-
-    //let animate = function () {
-    //  requestAnimationFrame( animate );
-    //  planetEarth.rotation.y += 0.001;
-
-    //  renderer.render( scene, camera );
-    //};
-    //animate();
-    //renderer.render( scene, camera );
-
-
- 
 }
 
 function tab1(){
@@ -239,14 +206,13 @@ function tab3(){
 }   
 
 
-
-const App: React.FC = (props) => (
+const App: React.FC = () => (
   <IonApp>     
     <IonReactRouter>     
       <IonTabs>
         <IonRouterOutlet>          
           <Route exact path="/tab1">
-            <Tab1 />
+            <Tab1/>
           </Route>
           <Route exact path="/tab2">
             <Tab2 />

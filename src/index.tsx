@@ -6,11 +6,9 @@ import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
+// React 18 important notes: https://daily-dev-tips.com/posts/upgrading-to-react-18/
 const container = document.getElementById('root');
 const root = createRoot(container);
-
-// React 18 important notes: https://daily-dev-tips.com/posts/upgrading-to-react-18/
-
 root.render(
   <React.StrictMode>  
     <App />
