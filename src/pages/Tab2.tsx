@@ -30,6 +30,7 @@ import EasySpeech from "easy-speech";
 import { useLists, List } from "../hooks/useWordLists";
 import "./Tab2.css";
 import { list } from "ionicons/icons";
+import { setMaxListeners } from "process";
 
 function addList() {
   console.log("addlist");
@@ -63,24 +64,32 @@ const Tab1: React.FC = () => {
   const [utterance, setUtterance] = useState('');
 
 
+  //select list
   useEffect(() => {
     console.log('list selected');
     console.log('List:' + JSON.stringify(wordList));  
     if(typeof wordList !== 'undefined') {
+      setUtterance("Okay, let's get started.");
       setCurrentWordIndex(1);   
     }
   },[wordList]);  
 
+  //manage flow
   useEffect(() => {
     if(typeof wordList !== 'undefined') {
       if (currentWordIndex < wordList.words.length) {
         console.log('next word');
+        setShowModal(true);
         setCurrentWord(wordList.words[currentWordIndex-1]);
-        const utterance = "Okay, spell " + wordList.words[currentWordIndex-1].word + ". " + wordList.words[currentWordIndex-1].exampleSentence;
+        const utterance = "Spell, " + wordList.words[currentWordIndex-1].word + ". " + wordList.words[currentWordIndex-1].exampleSentence;
         setUtterance(utterance);
-        setShowModal(prevShowModal => !(prevShowModal));
       } else {
         setUtterance("You have finished the drill! Well done.");
+        setShowModal(false);
+        // finish
+        setWordList(undefined);
+        setCurrentWord(undefined);
+        setCurrentWordIndex(0);
         return () => {
           // clean up
         }
@@ -88,33 +97,31 @@ const Tab1: React.FC = () => {
     }
   },[currentWordIndex])
 
+  //speech
   useEffect(() => {
+    let voices = EasySpeech.voices();
     EasySpeech.speak({
       text: utterance,
-      //voice: myLangVoice, // optional, will use a default or fallback
-      pitch: 1,
-      rate: 0.9,
+      voice: voices[2], //EasySpeech.voices[2], //myLangVoice, // optional, will use a default or fallback
+      pitch: 0.9,
+      rate: 0.7,
       volume: 1,
       // there are more events, see the API for supported events
       //boundary: (e) => console.debug("boundary reached"),
     });
   },[utterance])
 
+  //modal
   useEffect(() => {
-    //modal
     if(showModal){
-      modal.current.present()
+      modal.current.present();
     } else { 
       modal.current.dismiss();
     }  
   },[showModal])
 
-
   function confirm() {
-    // toggle modal
-    setShowModal(prevShowModal => !(prevShowModal));   
-    //modal.current?.dismiss(input.current?.value, "confirm");
-    //random number between 1 and 8
+  
     let random = Math.floor(Math.random() * 8) + 1;
     switch(random){
       case 1:
@@ -152,7 +159,7 @@ const Tab1: React.FC = () => {
           setUtterance("Yes, well done!");
           break;
         case 2:
-          setUtterance("Alrighty then! You got it!");
+          setUtterance("Good one!");
           break;
         case 3:
           setUtterance("Yep, got it!");
@@ -164,7 +171,7 @@ const Tab1: React.FC = () => {
           setUtterance("Nice going!");
           break;
         case 6:
-          setUtterance("Oh, yeh!");
+          setUtterance("Correct!");
           break;
         case 7:
           setUtterance("Yes!");
@@ -174,25 +181,31 @@ const Tab1: React.FC = () => {
           break;                   
       }        
       input.current.value = '';
+      setShowModal(false); 
       setRetryCount(0);
       setCurrentWordIndex(prevWordIndex => prevWordIndex + 1);
     } else {
-      setUtterance("No, incorrect!");
       
       console.log('retryCount:' + retryCount);
+      let retryPrompt
       if(retryCount<3){
         switch(retryCount){
+          case 0:
+            retryPrompt = "Incorrect. Keep trying!";
+            break;          
           case 1:
-            setUtterance("Try again!");
+            retryPrompt = "Try again!";
             break;
           case 2:
-            setUtterance("One more time!");
+            retryPrompt = "One more time!";
             break;
-        }     
-        setShowModal(prevShowModal => !(prevShowModal));
-        repeat();  
-      }else{    
+        }    
+        retryPrompt = retryPrompt + ' ' + currentWord.word 
+        setUtterance(retryPrompt) 
+        setRetryCount((prevRetryCount => prevRetryCount + 1 ));
+      } else {    
         setUtterance("Maybe next time!");
+        setShowModal(false);
         console.log(input.current?.value);
         setRetryCount(0);
         setRetryCount(prevRetryCount => prevRetryCount++);
@@ -204,7 +217,7 @@ const Tab1: React.FC = () => {
 
   function repeat() {
     console.log('Repeat')
-    setUtterance("Okay, " + currentWord.word + '. ' + currentWord.exampleSentence);
+    setUtterance(currentWord.word + '. ' + currentWord.exampleSentence);
   }  
 
   function onWillDismiss(ev: CustomEvent<OverlayEventDetail>) {
@@ -277,7 +290,7 @@ const Tab1: React.FC = () => {
                 </IonCol>
                 <IonCol class="ion-no-padding">
                   <IonButton class="ion-float-right primary" strong={true} onClick={() => confirm()}>
-                    Finished
+                    Next
                   </IonButton>
                 </IonCol>
               </IonRow>
