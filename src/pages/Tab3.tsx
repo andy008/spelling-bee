@@ -26,22 +26,24 @@ const Tab3: React.FC = () => {
         </IonHeader>
         <IonGrid>
           <IonRow class="ion-no-padding">
-            <IonCol size="3"></IonCol>
-            <IonCol size="6">
+            <IonCol size="2"></IonCol>
+            <IonCol size="8">
               <IonCard onClick={() => setUser(user)}>
                 <img width={200} src={user.avatar} alt="Avatar" />
                 <IonCardHeader>
                   <IonCardTitle><IonLabel color="warning">{user.name}</IonLabel></IonCardTitle>
                 </IonCardHeader>
-                <IonCardContent color="warning">
+                <IonCardContent>
+                  <div className ="scores">
                   <p>Score:{user.score}</p>
                   <p>Drills:{user.drills}</p>
                   <p>Correct:{user.correct}</p>
-                  <p>Incorrect:{user.incorrect}</p>                  
+                  <p>Incorrect:{user.incorrect}</p>    
+                  </div>              
                 </IonCardContent>
               </IonCard>      
             </IonCol>   
-            <IonCol size="3"></IonCol>     
+            <IonCol size="2"></IonCol>     
           </IonRow>
           <IonRow>
             <IonCol>

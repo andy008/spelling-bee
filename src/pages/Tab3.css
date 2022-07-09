@@ -6,3 +6,9 @@ ion-card-content {
     --background: #c7c5c5d3 !important;
     --color: #796f18 !important;
 }
+
+.scores {
+    color: #b4a83d !important;
+    font-size: 1.1em;
+    font-weight: 500;
+}
