@@ -9,6 +9,41 @@ export function useLists():any {
 
     console.log('Use Lists!');
 
+    let userProfile 
+
+    let UsersDefault = [
+        {
+            id: 1,
+            name: 'Sasha',
+            score: 68,
+            drills: 14,
+            correct: 73,
+            incorrect: 7,
+            avatar: 'https://randomuser.me/api/portraits/lego/0.jpg',
+
+        },
+        {
+            id: 2,
+            name: 'Edward',
+            score: 82,
+            drills: 18,
+            correct: 92,
+            incorrect: 16,
+            avatar: 'https://randomuser.me/api/portraits/lego/1.jpg',
+
+        },     
+        {
+            id: 3,
+            name: 'Dad',
+            score: 92,
+            drills: 108,
+            correct: 66,
+            incorrect: 2,
+            avatar: 'https://randomuser.me/api/portraits/lego/2.jpg',
+
+        }              
+    ]
+
     let wordListsDefault:Lists = {
         id: 1,
         name: 'Basic',
@@ -78,11 +113,21 @@ export function useLists():any {
     } 
     
     const [wordLists, setWordLists] = useState<Lists>(wordListsDefault);
+    const [userList, setUserList] = useState(UsersDefault);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         console.log('Use effect ran');  
         getList();
     },[]);
+
+    function setAppUserProfile(user){
+        userProfile = user;
+    }
+
+    function getAppUserProfile(){
+        return userProfile;
+    }
    
   
     const loadSaved = async () => {
@@ -145,7 +190,10 @@ export function useLists():any {
         newList,
         saveLists,
         deleteList,
-        wordLists
+        userList,
+        wordLists,
+        user,
+        setUser
     };
 
     return services;
@@ -167,6 +215,11 @@ export function useLists():any {
             return wordListsDefault;
         }
     }; 
+
+    function saveList(list:List) {
+        console.log('Saving list');
+        localStorage.setItem('lists', JSON.stringify(list));
+    }
 }
 
 type Nullable<T> = T | null;

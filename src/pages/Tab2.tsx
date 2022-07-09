@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import {
   IonGrid,
   IonRow,
@@ -24,17 +24,32 @@ import {
   IonModal,
 } from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/core/components";
-import { camera, addCircle, close, downloadSharp, contractOutline } from "ionicons/icons";
+import { listCircleOutline, addCircleOutline, close, downloadSharp, contractOutline } from "ionicons/icons";
 //import ExploreContainer from '../components/ExploreContainer';
 import EasySpeech from "easy-speech";
-import { useLists, List } from "../hooks/useWordLists";
+import { UserContext } from '../helpers/context';
+import { useLists } from "../hooks/useWordLists";
 import "./Tab2.css";
 import { list } from "ionicons/icons";
-import { setMaxListeners } from "process";
+
 
 function addList() {
   console.log("addlist");
 }
+
+//  Global State
+const initialState = { 
+  user: {
+    id: 0,
+    name: '',
+    score: 0,
+    drills: 0,
+    correct: 0,
+    incorrect: 0,
+    avatar: '',    
+  },
+  app: {} 
+};
 
 let voices
 EasySpeech.detect();
@@ -50,8 +65,10 @@ EasySpeech.init({ maxTimeout: 5000, interval: 250 })
 const Tab1: React.FC = () => {
 
   console.log('Init Tab1');
-  
-  const { getList, wordLists } = useLists();
+
+  const { user, setUser } = useContext(UserContext);
+ 
+  const { wordLists } = useLists();
   const modal = useRef<HTMLIonModalElement>(null);
   const input = useRef<HTMLIonInputElement>(null);
 
@@ -62,7 +79,6 @@ const Tab1: React.FC = () => {
   const [wordList, setWordList] = useState(undefined);
   const [retryCount, setRetryCount] = useState(0);
   const [utterance, setUtterance] = useState('');
-
 
   //select list
   useEffect(() => {
@@ -77,6 +93,7 @@ const Tab1: React.FC = () => {
   //manage flow
   useEffect(() => {
     if(typeof wordList !== 'undefined') {
+
       if (currentWordIndex < wordList.words.length) {
         console.log('next word');
         setShowModal(true);
@@ -231,7 +248,7 @@ const Tab1: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Word Lists</IonTitle>
+          <IonTitle>Word Lists {user.name}</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
@@ -257,7 +274,7 @@ const Tab1: React.FC = () => {
         </IonList>
         <IonFab vertical="bottom" horizontal="center" slot="fixed">
           <IonFabButton onClick={() => addList()}>
-            <IonIcon icon={addCircle}></IonIcon>
+            <IonIcon icon={addCircleOutline}></IonIcon>
           </IonFabButton>
         </IonFab>
         <IonModal

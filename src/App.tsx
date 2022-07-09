@@ -23,6 +23,8 @@ import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
 import { InteractionManager } from "three.interactive";
 
+import { UserProvider } from './helpers/context';
+
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -205,24 +207,37 @@ function tab3(){
    
 }   
 
+const App: React.FC = () => {
 
-const App: React.FC = () => (
+  const [user, setUser] = useState({
+    id: 1,
+    name: '',
+    score: 0,
+    drills: 0,
+    correct: 0,
+    incorrect: 0,
+    avatar: '',
+  });
+
+  return (
   <IonApp>     
     <IonReactRouter>     
       <IonTabs>
-        <IonRouterOutlet>          
-          <Route exact path="/tab1">
-            <Tab1/>
-          </Route>
-          <Route exact path="/tab2">
-            <Tab2 />
-          </Route>
-          <Route path="/tab3">
-            <Tab3 />
-          </Route>
-          <Route exact path="/">
-            <Redirect to="/tab1" />
-          </Route>
+        <IonRouterOutlet>    
+          <UserProvider>    
+            <Route exact path="/tab1">
+              <Tab1/>
+            </Route>
+            <Route exact path="/tab2">
+              <Tab2 />
+            </Route>
+            <Route path="/tab3">
+              <Tab3 />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/tab1" />
+            </Route>
+          </UserProvider>  
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton onClick={tab1} tab="tab1" href="/tab1">
@@ -241,6 +256,7 @@ const App: React.FC = () => (
       </IonTabs>
     </IonReactRouter>
   </IonApp>
-);
+  );
+}
 
 export default App;
