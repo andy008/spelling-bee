@@ -1,0 +1,8 @@
+ion-card {
+    --background: #6e729cb2 !important;
+}
+
+ion-card-content {
+    --background: #c7c5c5d3 !important;
+    --color: #796f18 !important;
+}

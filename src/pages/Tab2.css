@@ -7,3 +7,15 @@ ion-item {
 .list-md {
     background: #9ba0dd63 !important;
 }
+
+ion-card {
+    --background: #6e729cb2 !important;
+}
+
+ion-header {
+    --background: #c7c5c5a6 !important;
+}
+
+ion-title {
+    --color: rgb(60, 57, 219) !important;
+}

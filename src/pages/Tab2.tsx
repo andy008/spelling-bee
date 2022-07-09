@@ -22,6 +22,8 @@ import {
   IonFabButton,
   IonIcon,
   IonModal,
+  IonChip,
+  IonAvatar
 } from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/core/components";
 import { listCircleOutline, addCircleOutline, close, downloadSharp, contractOutline } from "ionicons/icons";
@@ -246,17 +248,20 @@ const Tab1: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
+      <IonHeader collapse="fade">
         <IonToolbar>
-          <IonTitle>Word Lists {user.name}</IonTitle>
+          <IonTitle color="tertiary">Spelling World</IonTitle>
+          {user.name &&
+            <IonChip slot="end">
+              <IonAvatar  class="user-avatar">
+                <img src={user.avatar} /> 
+              </IonAvatar>  
+              <IonLabel>{user.name}</IonLabel> 
+            </IonChip> 
+          }     
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle>Word Lists</IonTitle>
-          </IonToolbar>
-        </IonHeader>
         <IonList>
           {wordLists.lists.map((list: any) => (
             <IonItemSliding key={list.id}>
