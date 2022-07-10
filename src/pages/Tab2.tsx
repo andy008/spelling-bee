@@ -86,6 +86,7 @@ const Tab1: React.FC = () => {
   const [text, setText] = useState<string>();
   const [number, setNumber] = useState<number>();
 
+  const [lists, setLists] = useState(wordLists);
   const [showModal, setShowModal] = useState(false);
   const [currentWord, setCurrentWord] = useState(undefined);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -306,7 +307,12 @@ const Tab1: React.FC = () => {
   }
 
   function storeList(){
-    
+    let newStateArray = lists;
+    newStateArray.lists.push(newWordList);
+    setLists(newStateArray);
+    modalList.current.dismiss();
+    setNewList(defaultEmptyList);
+    setStep(0);
   }
 
 
@@ -350,7 +356,7 @@ const Tab1: React.FC = () => {
       <IonContent fullscreen>
         <IonList class="ion-margin">
           <IonListHeader color="tertiary">Spelling Lists</IonListHeader>
-          {wordLists.lists.map((list: any) => (
+          {lists.lists.map((list: any) => (
             <IonItemSliding key={list.id} class="ion-padding">
               <IonItem>
                 <IonIcon icon={checkmarkCircleOutline} color="warning" slot="end" />
@@ -506,6 +512,7 @@ const Tab1: React.FC = () => {
                   <IonButton class="ion-float-right primary" strong={true} onClick={() => {
                       saveWord();
                       saveList();
+                      storeList();
                     }}>
                     Finished
                   </IonButton>
