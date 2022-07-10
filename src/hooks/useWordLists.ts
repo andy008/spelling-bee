@@ -111,10 +111,23 @@ export function useLists():any {
             }
         ]
     } 
+
+    let emptyList:List = {
+        id: 0,
+        createdDate: new Date(),
+        year: 0,
+        difficulty: 'basic',
+        name: '',
+        description: '',
+        words: [],
+        completed: false,
+        completedDate: null
+    }    
     
     const [wordLists, setWordLists] = useState<Lists>(wordListsDefault);
     const [userList, setUserList] = useState(UsersDefault);
     const [user, setUser] = useState(null);
+    const [defaultEmptyList, setDefaultEmptyList] = useState(emptyList);
 
     useEffect(() => {
         console.log('Use effect ran');  
@@ -185,6 +198,8 @@ export function useLists():any {
     }
 
 
+
+
     const services:any = {
         getList,
         newList,
@@ -193,6 +208,7 @@ export function useLists():any {
         userList,
         wordLists,
         user,
+        defaultEmptyList,
         setUser
     };
 
@@ -220,6 +236,7 @@ export function useLists():any {
         console.log('Saving list');
         localStorage.setItem('lists', JSON.stringify(list));
     }
+
 }
 
 type Nullable<T> = T | null;

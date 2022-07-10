@@ -12,6 +12,7 @@ import {
   IonInput,
   IonTitle,
   IonToolbar,
+  IonListHeader,
   IonList,
   IonItem,
   IonLabel,
@@ -23,16 +24,22 @@ import {
   IonIcon,
   IonModal,
   IonChip,
-  IonAvatar
+  IonAvatar,
+  IonSelect,
+  IonSelectOption,
+  IonText,
 } from "@ionic/react";
 import { OverlayEventDetail } from "@ionic/core/components";
-import { listCircleOutline, addCircleOutline, close, downloadSharp, contractOutline } from "ionicons/icons";
+import { listCircleOutline, addCircleOutline, closeCircleOutline, downloadSharp, contractOutline, checkmarkCircleOutline } from 'ionicons/icons';
 //import ExploreContainer from '../components/ExploreContainer';
 import EasySpeech from "easy-speech";
 import { UserContext } from '../helpers/context';
 import { useLists } from "../hooks/useWordLists";
 import "./Tab2.css";
 import { list } from "ionicons/icons";
+
+//  better form handling https://www.smashingmagazine.com/2020/08/forms-validation-ionic-react/
+//  react hook form
 
 
 function addList() {
@@ -70,19 +77,27 @@ const Tab1: React.FC = () => {
 
   const { user, setUser } = useContext(UserContext);
  
-  const { wordLists } = useLists();
+  const { wordLists, defaultEmptyList } = useLists();
   const modal = useRef<HTMLIonModalElement>(null);
   const input = useRef<HTMLIonInputElement>(null);
+  const modalList = useRef<HTMLIonModalElement>(null);
 
   // state
+  const [text, setText] = useState<string>();
+  const [number, setNumber] = useState<number>();
+
   const [showModal, setShowModal] = useState(false);
   const [currentWord, setCurrentWord] = useState(undefined);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [wordList, setWordList] = useState(undefined);
   const [retryCount, setRetryCount] = useState(0);
   const [utterance, setUtterance] = useState('');
+  const [newWordListEdit, setNewList] = useState(undefined);
+  const [newWord, setNewWord] = useState({word:'',sentence:''});
+  const [step, setStep] = useState(0);
 
-  //select list
+  //  select list
+
   useEffect(() => {
     console.log('list selected');
     console.log('List:' + JSON.stringify(wordList));  
@@ -92,7 +107,8 @@ const Tab1: React.FC = () => {
     }
   },[wordList]);  
 
-  //manage flow
+  //  manage flow
+
   useEffect(() => {
     if(typeof wordList !== 'undefined') {
 
@@ -234,6 +250,8 @@ const Tab1: React.FC = () => {
   }
 
 
+
+
   function repeat() {
     console.log('Repeat')
     setUtterance(currentWord.word + '. ' + currentWord.exampleSentence);
@@ -243,6 +261,91 @@ const Tab1: React.FC = () => {
     if (ev.detail.role === "confirm") {
       //setMessage(`Hello, ${ev.detail.data}!`);
     }
+  }
+
+  function dismissDrill(){
+    modal.current?.dismiss();
+    let sayDimiss = "Okay, let's come back to that later."
+    setUtterance(sayDimiss);
+    // finish
+    setWordList(undefined);
+    setCurrentWord(undefined);
+    setCurrentWordIndex(0);    
+  }
+
+  function addList(){
+    setNewList(defaultEmptyList);
+    modalList.current.present();
+    setStep(1);
+    setUtterance("Okay, let's make a new word list.");
+  }
+
+  function cancelList(){
+
+  }
+
+  function saveList(){
+    
+  }
+
+  function editList(){
+
+  }
+
+  function saveWord(){
+    console.log('New word:' + JSON.stringify(newWord));
+    /*
+    setNewList(current => {
+      current.words.push(newWord);
+    })
+
+    setNewWord({
+      word: '',
+      sentence: '',
+    });  
+    */
+    console.log('new word list:' + JSON.stringify(newWordListEdit));  
+  }
+
+  function createNewWord(){
+    setNewWord({
+      word: '',
+      sentence: '',
+    });
+  }
+
+   function onChangeList(event) {  
+    console.log('Event: ' + JSON.stringify(event));
+    const formState = event.detail.name
+    //const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value
+
+    setText(event.detail.value!);
+    
+    setNewList(curr => {
+       return{
+           ...curr,
+           [formState]: event.detail.value!
+       }
+   })
+  }
+
+  function onChangeNewWord(event){  
+    console.log('onChangeNewWord:');
+    console.log('Event: ' + JSON.stringify(event));
+    const formState = event.detail.name
+    //const value = event.target.type === 'checkbox' ? event.target.checked : event.detail.value!
+
+    console.log('Changing:' + formState + ' to ' + event.detail.value!);
+    
+    setText(event.detail.value!);
+
+    setNewWord(curr => {
+       return{
+           ...curr,
+           [formState]: event.detail.value!
+       }
+   })
+
   }
 
 
@@ -262,10 +365,12 @@ const Tab1: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonList>
+        <IonList class="ion-margin">
+          <IonListHeader color="tertiary">Spelling Lists</IonListHeader>
           {wordLists.lists.map((list: any) => (
-            <IonItemSliding key={list.id}>
+            <IonItemSliding key={list.id} class="ion-padding">
               <IonItem>
+                <IonIcon icon={checkmarkCircleOutline} color="warning" slot="end" />
                 <IonLabel onClick={() => setWordList(list)} color="secondary">
                   {list.name}
                 </IonLabel>
@@ -278,7 +383,7 @@ const Tab1: React.FC = () => {
           ;
         </IonList>
         <IonFab vertical="bottom" horizontal="center" slot="fixed">
-          <IonFabButton onClick={() => addList()}>
+          <IonFabButton onClick={() => {addList()}}>
             <IonIcon icon={addCircleOutline}></IonIcon>
           </IonFabButton>
         </IonFab>
@@ -290,12 +395,12 @@ const Tab1: React.FC = () => {
         >
           <IonHeader>
             <IonToolbar>
-              <IonButtons slot="start">
-                <IonButton onClick={() => modal.current?.dismiss()}>
-                  Cancel
-                </IonButton>
-              </IonButtons>
               <IonTitle>Spelling Drill</IonTitle>
+              <IonButtons slot="end">
+                <IonButton onClick={() => dismissDrill()}>
+                  <IonIcon slot="start" icon={closeCircleOutline} />
+                </IonButton>
+              </IonButtons>                 
             </IonToolbar>
           </IonHeader>
           <IonContent className="ion-padding">
@@ -319,6 +424,113 @@ const Tab1: React.FC = () => {
             </IonGrid>
           </IonContent>
         </IonModal>
+
+        <IonModal
+          ref={modalList}
+          trigger="open-modal"
+          onWillDismiss={(ev) => onWillDismiss(ev)}
+          initialBreakpoint={0.8} breakpoints={[0, 0.8, 0.8, 0.8]}
+        >
+          <IonHeader>
+            <IonToolbar>
+
+              <IonTitle>Create List</IonTitle>
+              <IonButtons slot="end">
+                <IonButton onClick={() => cancelList()}>
+                  <IonIcon slot="start" icon={closeCircleOutline} />
+                </IonButton>
+              </IonButtons>              
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+            {step == 1 &&
+            <div>
+              <IonListHeader color="tertiary">Details</IonListHeader>
+              <IonItem>
+                <IonLabel position="stacked">Name</IonLabel>
+                <IonInput value={text} onIonChange={e => onChangeList(e)} type="text" />
+              </IonItem>
+              <IonItem>
+                <IonLabel position="stacked">Description (optional)</IonLabel>
+                <IonInput value={text} onIonChange={e => onChangeList(e)} type="text"  />
+              </IonItem>     
+              <IonItem>
+                <IonLabel position="stacked">School Year</IonLabel>
+                <IonSelect value={number} onIonChange={e => onChangeList(e)}>
+                  <IonSelectOption value="0">Kindergarten</IonSelectOption>
+                  <IonSelectOption value="1">Year 1</IonSelectOption>
+                  <IonSelectOption value="2">Year 2</IonSelectOption>
+                  <IonSelectOption value="3">Year 3</IonSelectOption>
+                  <IonSelectOption value="4">Year 4</IonSelectOption>
+                  <IonSelectOption value="5">Year 5</IonSelectOption>
+                  <IonSelectOption value="6">Year 6</IonSelectOption>
+                </IonSelect>
+              </IonItem> 
+              <IonItem>
+                <IonLabel position="stacked">Difficult</IonLabel>
+                <IonSelect value={text} onIonChange={e => onChangeList(e)}>
+                  <IonSelectOption value="easy">Easy</IonSelectOption>
+                  <IonSelectOption value="medium">Medium</IonSelectOption>
+                  <IonSelectOption value="hard">Hard</IonSelectOption>
+                </IonSelect>
+              </IonItem>  
+            </div>
+            }
+            {step == 2 && 
+            <div>
+              <IonListHeader color="tertiary">Words</IonListHeader>
+              <IonItem>
+                <IonLabel position="stacked">Word</IonLabel>
+                <IonInput value={text} onIonChange={e => onChangeNewWord(e)} type="text"  />
+              </IonItem>   
+              <IonItem>
+                <IonLabel position="stacked">Sentence example</IonLabel>
+                <IonInput value={text} onIonChange={e => onChangeNewWord(e)} type="text"  />
+              </IonItem>                
+              <IonGrid>
+                <IonRow class="ion-no-padding">
+                  <IonCol class="ion-no-padding">
+                  </IonCol>
+                  <IonCol class="ion-no-padding">
+                    <IonButton class="ion-float-right primary" strong={true} onClick={() => saveWord()}>
+                      Add Another
+                    </IonButton>
+                  </IonCol>
+                </IonRow>
+              </IonGrid>     
+            </div>       
+            }
+            <IonGrid>
+              <IonRow class="ion-no-padding">
+                <IonCol class="ion-no-padding">
+                  <IonButton class="ion-float-left secondary" strong={true} onClick={() => cancelList()}>
+                    Cancel
+                  </IonButton>
+                </IonCol>
+                {step == 1 && 
+                <IonCol class="ion-no-padding">
+                  <IonButton class="ion-float-right primary" strong={true} onClick={() => 
+                    {
+                      setStep(2); 
+                    }}>
+                    Next
+                  </IonButton>
+                </IonCol>
+                } 
+                {step == 2 && 
+                <IonCol class="ion-no-padding">
+                  <IonButton class="ion-float-right primary" strong={true} onClick={() => {
+                      saveWord();
+                      saveList();
+                    }}>
+                    Finished
+                  </IonButton>
+                </IonCol>
+                }                 
+              </IonRow>
+            </IonGrid>
+          </IonContent>
+        </IonModal>        
       </IonContent>
     </IonPage>
   );

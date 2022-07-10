@@ -46,7 +46,7 @@ const Tab2: React.FC = () => {
         <IonGrid>
           <IonRow class="ion-no-padding" >
             {userList.map((user: any) => (
-            <IonCol size="6">  
+            <IonCol size="6" key={user.id}>  
               <IonCard onClick={() => setUser(user)}>
                 <img width={200} src={user.avatar} alt="Avatar" />
                 <IonCardHeader>
