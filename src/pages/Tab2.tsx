@@ -39,7 +39,7 @@ import "./Tab2.css";
 import { list } from "ionicons/icons";
 
 //  better form handling https://www.smashingmagazine.com/2020/08/forms-validation-ionic-react/
-//  react hook form
+//  react hook form https://stackblitz.com/edit/ionic-react-hook-form-cit9zr?file=src%2FApp.tsx 
 
 
 function addList() {
@@ -92,9 +92,12 @@ const Tab1: React.FC = () => {
   const [wordList, setWordList] = useState(undefined);
   const [retryCount, setRetryCount] = useState(0);
   const [utterance, setUtterance] = useState('');
-  const [newWordListEdit, setNewList] = useState(undefined);
-  const [newWord, setNewWord] = useState({word:'',sentence:''});
+  const [newWordListEdit, setNewList] = useState(defaultEmptyList);
+  //const [newWord, setNewWord] = useState({word:'',sentence:''});
   const [step, setStep] = useState(0);
+
+  let newWordList = defaultEmptyList;
+  let newWord = {word:'',sentence:''};
 
   //  select list
 
@@ -274,7 +277,9 @@ const Tab1: React.FC = () => {
   }
 
   function addList(){
-    setNewList(defaultEmptyList);
+    newWordList = JSON.parse(JSON.stringify(defaultEmptyList));
+    console.log(JSON.stringify(newWordList));
+    //setNewList(defaultEmptyList);
     modalList.current.present();
     setStep(1);
     setUtterance("Okay, let's make a new word list.");
@@ -285,7 +290,9 @@ const Tab1: React.FC = () => {
   }
 
   function saveList(){
-    
+    console.log(JSON.stringify(newWordList));
+    setNewList(newWordList);
+    console.log('Word list:' + JSON.stringify(newWordListEdit));
   }
 
   function editList(){
@@ -293,42 +300,17 @@ const Tab1: React.FC = () => {
   }
 
   function saveWord(){
-    console.log('New word:' + JSON.stringify(newWord));
-    /*
-    setNewList(current => {
-      current.words.push(newWord);
-    })
-
-    setNewWord({
-      word: '',
-      sentence: '',
-    });  
-    */
-    console.log('new word list:' + JSON.stringify(newWordListEdit));  
+    let newStateArray = newWordListEdit;
+    newStateArray.words.push(newWord);
+    setNewList(newStateArray);
   }
 
-  function createNewWord(){
-    setNewWord({
-      word: '',
-      sentence: '',
-    });
-  }
-
-   function onChangeList(event) {  
-    console.log('Event: ' + JSON.stringify(event));
-    const formState = event.detail.name
-    //const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value
-
-    setText(event.detail.value!);
+  function storeList(){
     
-    setNewList(curr => {
-       return{
-           ...curr,
-           [formState]: event.detail.value!
-       }
-   })
   }
 
+
+  /*
   function onChangeNewWord(event){  
     console.log('onChangeNewWord:');
     console.log('Event: ' + JSON.stringify(event));
@@ -347,6 +329,7 @@ const Tab1: React.FC = () => {
    })
 
   }
+  */
 
 
   return (
@@ -448,15 +431,15 @@ const Tab1: React.FC = () => {
               <IonListHeader color="tertiary">Details</IonListHeader>
               <IonItem>
                 <IonLabel position="stacked">Name</IonLabel>
-                <IonInput value={text} onIonChange={e => onChangeList(e)} type="text" />
+                <IonInput value={newWordList?.name} onIonChange={e => newWordList.name = e.detail.value} type="text" />
               </IonItem>
               <IonItem>
                 <IonLabel position="stacked">Description (optional)</IonLabel>
-                <IonInput value={text} onIonChange={e => onChangeList(e)} type="text"  />
+                <IonInput value={newWordList.description} onIonChange={e => newWordList.description = e.detail.value} type="text"  />
               </IonItem>     
               <IonItem>
                 <IonLabel position="stacked">School Year</IonLabel>
-                <IonSelect value={number} onIonChange={e => onChangeList(e)}>
+                <IonSelect value={newWordList.year} onIonChange={e => newWordList.year = e.detail.value}>
                   <IonSelectOption value="0">Kindergarten</IonSelectOption>
                   <IonSelectOption value="1">Year 1</IonSelectOption>
                   <IonSelectOption value="2">Year 2</IonSelectOption>
@@ -468,7 +451,7 @@ const Tab1: React.FC = () => {
               </IonItem> 
               <IonItem>
                 <IonLabel position="stacked">Difficult</IonLabel>
-                <IonSelect value={text} onIonChange={e => onChangeList(e)}>
+                <IonSelect value={newWordList.difficulty} onIonChange={e => newWordList.difficulty = e.detail.value}>
                   <IonSelectOption value="easy">Easy</IonSelectOption>
                   <IonSelectOption value="medium">Medium</IonSelectOption>
                   <IonSelectOption value="hard">Hard</IonSelectOption>
@@ -481,11 +464,11 @@ const Tab1: React.FC = () => {
               <IonListHeader color="tertiary">Words</IonListHeader>
               <IonItem>
                 <IonLabel position="stacked">Word</IonLabel>
-                <IonInput value={text} onIonChange={e => onChangeNewWord(e)} type="text"  />
+                <IonInput value={newWord.word} onIonChange={e => newWord.word = e.detail.value} type="text"  />
               </IonItem>   
               <IonItem>
                 <IonLabel position="stacked">Sentence example</IonLabel>
-                <IonInput value={text} onIonChange={e => onChangeNewWord(e)} type="text"  />
+                <IonInput value={newWord.sentence} onIonChange={e => newWord.sentence = e.detail.value} type="text"  />
               </IonItem>                
               <IonGrid>
                 <IonRow class="ion-no-padding">
@@ -511,6 +494,7 @@ const Tab1: React.FC = () => {
                 <IonCol class="ion-no-padding">
                   <IonButton class="ion-float-right primary" strong={true} onClick={() => 
                     {
+                      saveList();
                       setStep(2); 
                     }}>
                     Next
