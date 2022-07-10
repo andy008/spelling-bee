@@ -94,11 +94,11 @@ const Tab1: React.FC = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [utterance, setUtterance] = useState('');
   const [newWordListEdit, setNewList] = useState(defaultEmptyList);
-  //const [newWord, setNewWord] = useState({word:'',exampleSentence:''});
+  const [newWord, setNewWord] = useState({word:'',exampleSentence:''});
   const [step, setStep] = useState(0);
 
   let newWordList = defaultEmptyList;
-  let newWord = {word:'',exampleSentence:''};
+
 
   //  select list
 
@@ -304,6 +304,7 @@ const Tab1: React.FC = () => {
     let newStateArray = newWordListEdit;
     newStateArray.words.push(newWord);
     setNewList(newStateArray);
+    setNewWord({word: '', exampleSentence: ''});
   }
 
   function storeList(){
