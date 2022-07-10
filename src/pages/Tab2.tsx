@@ -118,13 +118,13 @@ const Tab1: React.FC = () => {
 
       if (currentWordIndex <= wordList.words.length) {
         console.log('next word');
-        setShowModal(true);
+        modal.current.present;
         setCurrentWord(wordList.words[currentWordIndex-1]);
         const utterance = "Spell, " + wordList.words[currentWordIndex-1].word + ". " + wordList.words[currentWordIndex-1].exampleSentence;
         setUtterance(utterance);
       } else {
         setUtterance("You have finished the drill! Well done.");
-        setShowModal(false);
+        modal.current.dismiss;
         // finish
         setWordList(undefined);
         setCurrentWord(undefined);
@@ -220,7 +220,7 @@ const Tab1: React.FC = () => {
           break;                   
       }        
       input.current.value = '';
-      setShowModal(false); 
+      modal.current.dismiss; 
       setRetryCount(0);
       setCurrentWordIndex(prevWordIndex => prevWordIndex + 1);
     } else {
@@ -244,7 +244,7 @@ const Tab1: React.FC = () => {
         setRetryCount((prevRetryCount => prevRetryCount + 1 ));
       } else {    
         setUtterance("Maybe next time!");
-        setShowModal(false);
+        modal.current.dismiss;
         console.log(input.current?.value);
         setRetryCount(0);
         setRetryCount(prevRetryCount => prevRetryCount++);
