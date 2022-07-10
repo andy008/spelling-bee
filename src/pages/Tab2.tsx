@@ -86,7 +86,7 @@ const Tab1: React.FC = () => {
   const [text, setText] = useState<string>();
   const [number, setNumber] = useState<number>();
 
-  const [lists, setLists] = useState(wordLists);
+  const [listsCollection, setLists] = useState(wordLists);
   const [showModal, setShowModal] = useState(false);
   const [currentWord, setCurrentWord] = useState(undefined);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -94,11 +94,11 @@ const Tab1: React.FC = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [utterance, setUtterance] = useState('');
   const [newWordListEdit, setNewList] = useState(defaultEmptyList);
-  //const [newWord, setNewWord] = useState({word:'',sentence:''});
+  //const [newWord, setNewWord] = useState({word:'',exampleSentence:''});
   const [step, setStep] = useState(0);
 
   let newWordList = defaultEmptyList;
-  let newWord = {word:'',sentence:''};
+  let newWord = {word:'',exampleSentence:''};
 
   //  select list
 
@@ -116,7 +116,7 @@ const Tab1: React.FC = () => {
   useEffect(() => {
     if(typeof wordList !== 'undefined') {
 
-      if (currentWordIndex < wordList.words.length) {
+      if (currentWordIndex <= wordList.words.length) {
         console.log('next word');
         setShowModal(true);
         setCurrentWord(wordList.words[currentWordIndex-1]);
@@ -307,11 +307,12 @@ const Tab1: React.FC = () => {
   }
 
   function storeList(){
-    let newStateArray = lists;
+    let newStateArray = listsCollection;
     newStateArray.lists.push(newWordList);
     setLists(newStateArray);
     modalList.current.dismiss();
     setNewList(defaultEmptyList);
+    localStorage.setItem('lists', JSON.stringify(listsCollection));
     setStep(0);
   }
 
@@ -356,7 +357,7 @@ const Tab1: React.FC = () => {
       <IonContent fullscreen>
         <IonList class="ion-margin">
           <IonListHeader color="tertiary">Spelling Lists</IonListHeader>
-          {lists.lists.map((list: any) => (
+          {listsCollection.lists.map((list: any) => (
             <IonItemSliding key={list.id} class="ion-padding">
               <IonItem>
                 <IonIcon icon={checkmarkCircleOutline} color="warning" slot="end" />
@@ -474,7 +475,7 @@ const Tab1: React.FC = () => {
               </IonItem>   
               <IonItem>
                 <IonLabel position="stacked">Sentence example</IonLabel>
-                <IonInput value={newWord.sentence} onIonChange={e => newWord.sentence = e.detail.value} type="text"  />
+                <IonInput value={newWord.exampleSentence} onIonChange={e => newWord.exampleSentence = e.detail.value} type="text"  />
               </IonItem>                
               <IonGrid>
                 <IonRow class="ion-no-padding">

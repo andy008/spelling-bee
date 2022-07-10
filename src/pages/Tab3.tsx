@@ -25,6 +25,7 @@ const Tab3: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonGrid>
+          {user.name && 
           <IonRow class="ion-no-padding">
             <IonCol size="2"></IonCol>
             <IonCol size="8">
@@ -45,6 +46,7 @@ const Tab3: React.FC = () => {
             </IonCol>   
             <IonCol size="2"></IonCol>     
           </IonRow>
+          }
           <IonRow>
             <IonCol>
 
