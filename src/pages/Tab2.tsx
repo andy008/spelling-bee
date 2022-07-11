@@ -117,14 +117,16 @@ const Tab1: React.FC = () => {
     if(typeof wordList !== 'undefined') {
 
       if (currentWordIndex <= wordList.words.length) {
+        setShowModal(true);
+        modal.current.present();
         console.log('next word');
-        modal.current.present;
         setCurrentWord(wordList.words[currentWordIndex-1]);
         const utterance = "Spell, " + wordList.words[currentWordIndex-1].word + ". " + wordList.words[currentWordIndex-1].exampleSentence;
         setUtterance(utterance);
+
       } else {
-        setUtterance("You have finished the drill! Well done.");
-        modal.current.dismiss;
+        setUtterance("You have finished the drill!");
+        modal.current.dismiss();
         // finish
         setWordList(undefined);
         setCurrentWord(undefined);
@@ -151,6 +153,7 @@ const Tab1: React.FC = () => {
   },[utterance])
 
   //modal
+  
   useEffect(() => {
     if(showModal){
       modal.current.present();
@@ -158,9 +161,10 @@ const Tab1: React.FC = () => {
       modal.current.dismiss();
     }  
   },[showModal])
+  
 
   function confirm() {
-  
+
     let random = Math.floor(Math.random() * 8) + 1;
     switch(random){
       case 1:
@@ -191,6 +195,7 @@ const Tab1: React.FC = () => {
     console.log('Confirm:' + currentWord.word);
 
     if (currentWord.word === input.current?.value) {
+      //modal.current.dismiss(); 
       //random number between 1 and 8
       let random = Math.floor(Math.random() * 8) + 1;
       switch(random){
@@ -220,7 +225,7 @@ const Tab1: React.FC = () => {
           break;                   
       }        
       input.current.value = '';
-      modal.current.dismiss; 
+
       setRetryCount(0);
       setCurrentWordIndex(prevWordIndex => prevWordIndex + 1);
     } else {
@@ -228,6 +233,7 @@ const Tab1: React.FC = () => {
       console.log('retryCount:' + retryCount);
       let retryPrompt
       if(retryCount<3){
+
         switch(retryCount){
           case 0:
             retryPrompt = "Incorrect. Keep trying!";
@@ -242,9 +248,10 @@ const Tab1: React.FC = () => {
         retryPrompt = retryPrompt + ' ' + currentWord.word 
         setUtterance(retryPrompt) 
         setRetryCount((prevRetryCount => prevRetryCount + 1 ));
+
       } else {    
         setUtterance("Maybe next time!");
-        modal.current.dismiss;
+
         console.log(input.current?.value);
         setRetryCount(0);
         setRetryCount(prevRetryCount => prevRetryCount++);
@@ -269,7 +276,7 @@ const Tab1: React.FC = () => {
 
   function dismissDrill(){
     modal.current?.dismiss();
-    let sayDimiss = "Okay, let's come back to that later."
+    let sayDimiss = "Let's come back to that later."
     setUtterance(sayDimiss);
     // finish
     setWordList(undefined);
@@ -283,7 +290,7 @@ const Tab1: React.FC = () => {
     //setNewList(defaultEmptyList);
     modalList.current.present();
     setStep(1);
-    setUtterance("Okay, let's make a new word list.");
+    setUtterance("Let's make a new word list.");
   }
 
   function cancelList(){
@@ -386,7 +393,7 @@ const Tab1: React.FC = () => {
         >
           <IonHeader>
             <IonToolbar>
-              <IonTitle>Spelling Drill</IonTitle>
+              <IonTitle>Spelling Drill : Word {currentWordIndex}</IonTitle>
               <IonButtons slot="end">
                 <IonButton onClick={() => dismissDrill()}>
                   <IonIcon slot="start" icon={closeCircleOutline} />
