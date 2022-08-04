@@ -1,4 +1,4 @@
-My first attempt at a react app (coming from Angular). 
+My first attempt at a React app (coming from Angular). 
 
 # spelling-bee
 A simple spelling drill using:-
