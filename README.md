@@ -7,6 +7,14 @@ A simple spelling drill using:-
 - Three JS
 - Ionic 5.x
 
+Enter a spelling list (currently stored in browser local storage only).
+Do a spelling drill - words are spoken, with coaching prompts, option to repeat and drill completion.
+
+# To Do
+- Adding scoring
+- Keep lists in dB
+- Proper user profile switching (currently only mock)
+- Dynamically create supplmentary drills to work on problem words
 
 # Working Demo (desktop only, as mobile voice synth is not yet supported)
 Hosted on Google Firebaseapp
