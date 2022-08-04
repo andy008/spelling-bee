@@ -6,6 +6,6 @@ A simple spelling drill using:-
 - Ionic 5.x
 
 
-# Work Demo
+# Working Demo (desktop only, as mobile voice synth is not yet supported)
 Hosted on Google Firebaseapp
 http://spelling-bee-9ba81.web.app/
