@@ -1,3 +1,5 @@
+My first attempt at a react app (coming from Angular). 
+
 # spelling-bee
 A simple spelling drill using:-
 - Browser voice synthesis (switching to Google Cloud Services soon!)
