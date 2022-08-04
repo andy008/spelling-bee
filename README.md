@@ -4,3 +4,8 @@ A simple spelling drill using:-
 - React 18
 - Three JS
 - Ionic 5.x
+
+
+# Work Demo
+Hosted on Google Firebaseapp
+http://spelling-bee-9ba81.web.app/
