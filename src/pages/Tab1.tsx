@@ -6,7 +6,7 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonGrid,
 import { UserContext } from '../helpers/context';
 import { personAddOutline } from "ionicons/icons";
 import { useState, useEffect, useRef, useContext } from "react";
-import { useLists } from "../hooks/useWordLists";
+import { useLists } from "../services/useWordLists";
 import './Tab2.css';
 
 const Tab2: React.FC = () => {

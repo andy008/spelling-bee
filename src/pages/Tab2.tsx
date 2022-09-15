@@ -34,7 +34,8 @@ import { listCircleOutline, addCircleOutline, closeCircleOutline, downloadSharp,
 //import ExploreContainer from '../components/ExploreContainer';
 import EasySpeech from "easy-speech";
 import { UserContext } from '../helpers/context';
-import { useLists } from "../hooks/useWordLists";
+import { useLists } from "../services/useWordLists";
+import { audioService } from "../services/audio";
 import "./Tab2.css";
 import { list } from "ionicons/icons";
 
@@ -77,7 +78,10 @@ const Tab1: React.FC = () => {
 
   const { user, setUser } = useContext(UserContext);
  
+  // services
   const { wordLists, defaultEmptyList } = useLists();
+  const { audio, speak } = audioService();
+
   const modal = useRef<HTMLIonModalElement>(null);
   const input = useRef<HTMLIonInputElement>(null);
   const modalList = useRef<HTMLIonModalElement>(null);
@@ -140,10 +144,12 @@ const Tab1: React.FC = () => {
 
   //speech
   useEffect(() => {
+    audio();
+    speak(utterance);
     let voices = EasySpeech.voices();
     EasySpeech.speak({
       text: utterance,
-      voice: voices[2], //EasySpeech.voices[2], //myLangVoice, // optional, will use a default or fallback
+      //voice: voices[2], //EasySpeech.voices[2], //myLangVoice, // optional, will use a default or fallback
       pitch: 0.9,
       rate: 0.7,
       volume: 1,

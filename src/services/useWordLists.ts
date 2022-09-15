@@ -197,7 +197,10 @@ export function useLists():any {
         return 'Success';
     }
 
-
+    const serviceTest = async (): Promise<String> => {
+        console.log('test');
+        return 'Success';
+    }
 
 
     const services:any = {
@@ -209,7 +212,8 @@ export function useLists():any {
         wordLists,
         user,
         defaultEmptyList,
-        setUser
+        setUser,
+        serviceTest
     };
 
     return services;
